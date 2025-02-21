@@ -1,0 +1,45 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\User09\\source\\repos\\EventManager\\EventManager\\wwwroot\\images\\00da45d5-cac8-47b3-adbb-6bbed30d04c8.jpg",
+      "PackagePath": "staticwebassets\\images\\00da45d5-cac8-47b3-adbb-6bbed30d04c8.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User09\\source\\repos\\EventManager\\EventManager\\wwwroot\\images\\19589006-f887-412e-873c-5b395cdcb5cd.jpg",
+      "PackagePath": "staticwebassets\\images\\19589006-f887-412e-873c-5b395cdcb5cd.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User09\\source\\repos\\EventManager\\EventManager\\wwwroot\\images\\2b4c9cb2-19ed-43f7-b66e-f550aea57f2e.jpg",
+      "PackagePath": "staticwebassets\\images\\2b4c9cb2-19ed-43f7-b66e-f550aea57f2e.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User09\\source\\repos\\EventManager\\EventManager\\wwwroot\\images\\62cba1cd-9abd-454a-9ba5-8ca7e22c493a.jpg",
+      "PackagePath": "staticwebassets\\images\\62cba1cd-9abd-454a-9ba5-8ca7e22c493a.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User09\\source\\repos\\EventManager\\EventManager\\wwwroot\\images\\7786d710-cbf7-4aa8-956e-4c5987915c1a.jpg",
+      "PackagePath": "staticwebassets\\images\\7786d710-cbf7-4aa8-956e-4c5987915c1a.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User09\\source\\repos\\EventManager\\EventManager\\wwwroot\\images\\a60fa350-8ab3-452e-b3f8-cf3689877288.jpg",
+      "PackagePath": "staticwebassets\\images\\a60fa350-8ab3-452e-b3f8-cf3689877288.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.EventManager.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.EventManager.props",
+      "PackagePath": "build\\EventManager.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.EventManager.props",
+      "PackagePath": "buildMultiTargeting\\EventManager.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.EventManager.props",
+      "PackagePath": "buildTransitive\\EventManager.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
