@@ -149,3 +149,4 @@ C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\System.I
 C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\System.Security.Permissions.dll
 C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\EventManager.staticwebassets.runtime.json
 C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
+C:\Users\User09\source\repos\EventManager\EventManager\obj\Debug\net8.0\EventManager.sourcelink.json

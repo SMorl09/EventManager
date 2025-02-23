@@ -18,6 +18,7 @@ namespace EventManager
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Configuration.AddEnvironmentVariables();
             var configuration = builder.Configuration;
 
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -25,12 +26,13 @@ namespace EventManager
             // Add services to the container.
 
             builder.Services.AddControllers();
+
            
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.Configure<FormOptions>(options =>
             {
-                options.MultipartBodyLengthLimit = 10 * 1024 * 1024; // Максимальный размер файла 10 МБ
+                options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
             });
 
             
@@ -73,7 +75,7 @@ namespace EventManager
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder.WithOrigins("http://localhost:3000") // Укажите порт вашего фронтенда
+                    builder => builder.WithOrigins("http://localhost:3000")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod());
             });
