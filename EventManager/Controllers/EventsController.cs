@@ -36,6 +36,14 @@ namespace EventManager.Controllers
                 return NotFound();
             return Ok(eventModel);
         }
+        [HttpGet("WithAddress/{id}")]
+        public async Task<IActionResult> GetEventWithAddress(int id)
+        {
+            var eventModel = await _eventService.GetEventWithAddressByIdAsync(id);
+            if (eventModel == null)
+                return NotFound();
+            return Ok(eventModel);
+        }
         [HttpGet("title/{title}")]
         public async Task<IActionResult> GetEventByName(string title)
         {
@@ -64,8 +72,8 @@ namespace EventManager.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             
-            var eventResponseWithoutImage = await _eventService.CreateEventAsync(eventRequest);
-            return CreatedAtAction(nameof(GetEventById), new { id = eventResponseWithoutImage.Id }, eventResponseWithoutImage);
+            var eventResponseWithoutImage = await _eventService.CreateEventWithAddressAsync(eventRequest);
+            return CreatedAtAction(nameof(GetEventWithAddress), new { id = eventResponseWithoutImage.Id }, eventResponseWithoutImage);
 
         }
         [HttpPut("{id}")]

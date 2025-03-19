@@ -150,3 +150,6 @@ C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\System.S
 C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\EventManager.staticwebassets.runtime.json
 C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
 C:\Users\User09\source\repos\EventManager\EventManager\obj\Debug\net8.0\EventManager.sourcelink.json
+C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\FluentValidation.dll
+C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll

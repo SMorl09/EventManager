@@ -1,5 +1,6 @@
 ﻿using Domain.Data;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Models
 {
@@ -14,5 +15,8 @@ namespace Domain.Models
         public int MaxNumberOfUsers { get; set; }
         public ICollection<User>? Users { get; set; }
         public string? ImageUrl {  get; set; }
+        [ForeignKey("Address")]
+        public int? AddressId { get; set; }
+        public Address? Address { get; set; }
     }
 }

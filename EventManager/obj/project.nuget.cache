@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "ClM0cwDGFksh6pcbMX7+TJDKmZJ6JTRD9ByZ8e0doFe04MPwPjad+sOmmyvh7ETWlB2xECyC0ARJDajAcI3USw==",
+  "dgSpecHash": "r7aI1bcsY9RxL84GIizmXBVXfrkembe3aKDsaVgETXlNq3a3MwbUwGK+ovkMXPUR28JUhxidDlqLf5fpTbBpwg==",
   "success": true,
   "projectFilePath": "C:\\Users\\User09\\source\\repos\\EventManager\\EventManager\\EventManager.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\User09\\.nuget\\packages\\fluentvalidation\\11.5.1\\fluentvalidation.11.5.1.nupkg.sha512",
+    "C:\\Users\\User09\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.0\\fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",
+    "C:\\Users\\User09\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.5.1\\fluentvalidation.dependencyinjectionextensions.11.5.1.nupkg.sha512",
     "C:\\Users\\User09\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\User09\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.1.1\\microsoft.aspnetcore.authentication.2.1.1.nupkg.sha512",
     "C:\\Users\\User09\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.1.1\\microsoft.aspnetcore.authentication.abstractions.2.1.1.nupkg.sha512",

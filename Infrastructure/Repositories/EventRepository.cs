@@ -55,6 +55,13 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(x => x.Title == name);
         }
 
+        public async Task<Event> GetEventWithAddress(int id)
+        {
+            return await _context.Events
+                .Include(x => x.Address)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task RegisterUserToEventAsync(int eventId, int userId)
         {
             var eventModel = await _context.Events

@@ -103,7 +103,13 @@ namespace TestEventManager
                 Description = "New Description",
                 StartDate = "2023-09-03",
                 Category = "Conference",
-                MaxNumberOfUsers = 150
+                MaxNumberOfUsers = 150,
+                Address=new AddressRequest
+                {
+                    State="Test",
+                    City="Test",
+                    Street="Test"
+                }
             };
             var content = new StringContent(JsonConvert.SerializeObject(newEvent), Encoding.UTF8, "application/json");
 

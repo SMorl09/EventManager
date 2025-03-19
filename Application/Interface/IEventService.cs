@@ -5,7 +5,7 @@ namespace Application.Interface
 {
     public interface IEventService
     {
-        Task<EventResponse> CreateEventAsync(EventRequest eventRequest, string imageUrl);
+        Task<EventWithAddressResponse> CreateEventAsync(EventRequest eventRequest, string imageUrl);
         Task DeleteEventAsync(int id);
         Task<IEnumerable<EventResponse>> GetAllEvents();
         Task<IEnumerable<UserResponse>> GetAllUsers(int id);
@@ -16,5 +16,7 @@ namespace Application.Interface
         Task UpdateEventAsync(int id, EventRequest eventRequest);
         Task UpdateEventImageAsync(int id, string imageUrl);
         Task<EventResponse> CreateEventAsync(EventRequest eventRequest);
+        Task<EventWithAddressResponse> CreateEventWithAddressAsync(EventRequest eventRequest);
+        Task<EventWithAddressResponse> GetEventWithAddressByIdAsync(int id);
     }
 }

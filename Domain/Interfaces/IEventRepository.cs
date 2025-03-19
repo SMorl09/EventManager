@@ -18,5 +18,6 @@ namespace Domain.Interfaces
         Task RegisterUserToEventAsync(int eventId, int userId);
         Task<Event> GetAllUsers(int id);
         Task UnregisterUserFromEventAsync(int eventId, int userId);
+        Task<Event> GetEventWithAddress(int id);
     }
 }

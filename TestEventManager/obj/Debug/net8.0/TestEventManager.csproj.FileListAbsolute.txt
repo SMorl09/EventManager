@@ -440,3 +440,4 @@ C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\Infr
 C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\EventManager.pdb
 C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\Infrastructure.pdb
 C:\Users\User09\source\repos\EventManager\TestEventManager\obj\Debug\net8.0\MvcTestingAppManifest.json
+C:\Users\User09\source\repos\EventManager\TestEventManager\obj\Debug\net8.0\TestEventManager.sourcelink.json

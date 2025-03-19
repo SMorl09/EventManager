@@ -76,6 +76,37 @@ namespace Application.Services
 
             return eventDto;
         }
+        public async Task<EventWithAddressResponse> GetEventWithAddressByIdAsync(int id)
+        {
+            var eventModel = await _eventRepository.GetEventWithAddress(id);
+            if (eventModel == null)
+                throw new Exception("Event not found.");
+            AddressResponse addressResponse = null;
+            if (eventModel.Address != null)
+            {
+                addressResponse = new AddressResponse
+                {
+                    Id = eventModel.Address.Id,
+                    State = eventModel.Address.State,
+                    City = eventModel.Address.City,
+                    Street = eventModel.Address.Street
+                };
+            }
+
+            var eventDto = new EventWithAddressResponse
+            {
+                Id = eventModel.Id,
+                Title = eventModel.Title,
+                Description = eventModel.Description,
+                StartDate = eventModel.StartDate,
+                Category = eventModel.Category.ToString(),
+                MaxNumberOfUsers = eventModel.MaxNumberOfUsers,
+                ImageUrl = eventModel.ImageUrl,
+                Address = addressResponse
+            };
+
+            return eventDto;
+        }
         public async Task<EventResponse> GetEventByNameAsync(string name)
         {
             var eventModel = await _eventRepository.GetEventByName(name);
@@ -95,7 +126,7 @@ namespace Application.Services
 
             return eventDto;
         }
-        public async Task<EventResponse> CreateEventAsync(EventRequest eventRequest,string imageUrl)
+        public async Task<EventWithAddressResponse> CreateEventAsync(EventRequest eventRequest,string imageUrl)
         {
             var eventModel = new Event
             {
@@ -104,12 +135,18 @@ namespace Application.Services
                 StartDate = eventRequest.StartDate,
                 Category = Enum.Parse<EventCategory>(eventRequest.Category),
                 MaxNumberOfUsers = eventRequest.MaxNumberOfUsers,
-                ImageUrl =imageUrl
+                ImageUrl =imageUrl,
+                Address=new Address
+                {
+                    Street=eventRequest.Address.Street,
+                    City=eventRequest.Address.City,
+                    State=eventRequest.Address.State
+                }
             };
 
             await _eventRepository.AddAsync(eventModel);
 
-            var eventResponse = new EventResponse
+            var eventResponse = new EventWithAddressResponse
             {
                 Id = eventModel.Id,
                 Title = eventModel.Title,
@@ -117,7 +154,14 @@ namespace Application.Services
                 StartDate = eventModel.StartDate,
                 Category = eventModel.Category.ToString(),
                 MaxNumberOfUsers = eventModel.MaxNumberOfUsers,
-                ImageUrl = eventModel.ImageUrl
+                ImageUrl = eventModel.ImageUrl,
+                Address = new AddressResponse
+                {
+                    Id = eventModel.Address.Id,
+                    State = eventModel.Address.State,
+                    City = eventModel.Address.City,
+                    Street = eventModel.Address.Street
+                }
             };
 
             return eventResponse;
@@ -144,6 +188,64 @@ namespace Application.Services
                 Category = eventModel.Category.ToString(),
                 MaxNumberOfUsers = eventModel.MaxNumberOfUsers,
                 ImageUrl = eventModel.ImageUrl
+            };
+
+            return eventResponse;
+        }
+        public async Task<EventWithAddressResponse> CreateEventWithAddressAsync(EventRequest eventRequest)
+        {
+            Event eventModel;
+            if (eventRequest.Address != null)
+            {
+                eventModel = new Event
+                {
+                    Title = eventRequest.Title,
+                    Description = eventRequest.Description,
+                    StartDate = eventRequest.StartDate,
+                    Category = Enum.Parse<EventCategory>(eventRequest.Category),
+                    MaxNumberOfUsers = eventRequest.MaxNumberOfUsers,
+                    Address = new Address
+                    {
+                        State = eventRequest.Address.State,
+                        City = eventRequest.Address.City,
+                        Street = eventRequest.Address.Street
+                    }
+                };
+            }
+            else
+            {
+                eventModel = new Event
+                {
+                    Title = eventRequest.Title,
+                    Description = eventRequest.Description,
+                    StartDate = eventRequest.StartDate,
+                    Category = Enum.Parse<EventCategory>(eventRequest.Category),
+                    MaxNumberOfUsers = eventRequest.MaxNumberOfUsers
+                };
+            }
+
+            await _eventRepository.AddAsync(eventModel);
+            AddressResponse addressResponse = null;
+            if (eventModel.Address != null)
+            {
+                addressResponse = new AddressResponse
+                {
+                    Id = eventModel.Address.Id,
+                    State = eventModel.Address.State,
+                    City = eventModel.Address.City,
+                    Street = eventModel.Address.Street
+                };
+            }
+            var eventResponse = new EventWithAddressResponse
+            {
+                Id = eventModel.Id,
+                Title = eventModel.Title,
+                Description = eventModel.Description,
+                StartDate = eventModel.StartDate,
+                Category = eventModel.Category.ToString(),
+                MaxNumberOfUsers = eventModel.MaxNumberOfUsers,
+                ImageUrl = eventModel.ImageUrl,
+                Address = addressResponse
             };
 
             return eventResponse;
@@ -186,5 +288,6 @@ namespace Application.Services
         {
             await _eventRepository.UnregisterUserFromEventAsync(eventId, userId);
         }
+
     }
 }

@@ -24,13 +24,13 @@ const EventDetails = () => {
         const fetchData = async () => {
             try {
                 const [eventRes, usersRes] = await Promise.all([
-                    fetch(`/api/events/${id}`, {
+                    fetch(`http://localhost:8080/api/events/WithAddress/${id}`, {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
                         }
                     }),
-                    fetch(`/api/events/${id}/users`, {
+                    fetch(`http://localhost:8080/api/events/${id}/users`, {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
@@ -111,7 +111,7 @@ const EventDetails = () => {
         const userId = getUserIdFromToken(token);
 
         try {
-            const response = await fetch(`/api/events/${id}/register/${userId}`, {
+            const response = await fetch(`http://localhost:8080/api/events/${id}/register/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -136,7 +136,7 @@ const EventDetails = () => {
         const userId = getUserIdFromToken(token);
 
         try {
-            const response = await fetch(`/api/events/${id}/unregister/${userId}`, {
+            const response = await fetch(`http://localhost:8080/api/events/${id}/unregister/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -172,7 +172,7 @@ const EventDetails = () => {
         formData.append('Image', selectedImage);
 
         try {
-            const response = await fetch(`/api/events/${id}/image`, {
+            const response = await fetch(`http://localhost:8080/api/events/${id}/image`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -198,13 +198,13 @@ const EventDetails = () => {
 
         try {
             const [eventRes, usersRes] = await Promise.all([
-                fetch(`/api/events/${id}`, {
+                fetch(`http://localhost:8080/api/events/${id}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     }
                 }),
-                fetch(`/api/events/${id}/users`, {
+                fetch(`http://localhost:8080/api/events/${id}/users`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
@@ -250,6 +250,14 @@ const EventDetails = () => {
             <p><strong>Дата начала:</strong> {event.startDate}</p>
             <p><strong>Категория:</strong> {event.category}</p>
             <p><strong>Максимальное количество участников:</strong> {event.maxNumberOfUsers}</p>
+            {event.address && (
+                <div>
+                <h3>Адресс:</h3>
+                 <p><strong>Страна:</strong> {event.address.state}</p>
+                 <p><strong>Город:</strong> {event.address.city}</p>
+                 <p><strong>Улица:</strong> {event.address.street}</p>
+                 </div>
+            )}
 
             {canRegister && (
                 <button onClick={handleRegister}>Записаться на событие</button>

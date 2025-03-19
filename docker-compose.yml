@@ -1,6 +1,16 @@
 version: '3.8'
 
 services:
+  frontend:
+    build:
+      context: ./event_manager_client
+      dockerfile: Dockerfile
+    container_name: react_app
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    command: npm start
   db:
     image: postgres:15
     container_name: postgres_db
@@ -24,6 +34,7 @@ services:
       - "8080:8080"
     depends_on:
       - db
+
 
 volumes:
   pgdata:

@@ -11,7 +11,7 @@ const EventsTable = () => {
         const fetchEvents = async () => {
             try {
                 const token = sessionStorage.getItem('token');
-                const response = await fetch('/api/events', {
+                const response = await fetch('http://localhost:8080/api/events', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

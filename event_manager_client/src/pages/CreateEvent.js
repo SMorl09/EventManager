@@ -8,22 +8,36 @@ const CreateEvent = () => {
     const [startDate, setStartDate] = useState('');
     const [category, setCategory] = useState('');
     const [maxNumberOfUsers, setMaxNumberOfUsers] = useState('');
+    const [state, setState] = useState('');
+    const [city, setCity] = useState('');
+    const [street, setStreet] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = sessionStorage.getItem('token');
-
+        
+        let address=null;
+        if(state.length>0)
+        {
+                address={
+                    state: state,
+                    city: city,
+                    street: street
+                };
+        }
         const event = {
             title: title,
             description: description,
             startDate: startDate,
             category: category, 
-            maxNumberOfUsers: maxNumberOfUsers
-        };
+            maxNumberOfUsers: maxNumberOfUsers,
+            address: address
+            };
+        
 
         try {
-            const response = await fetch('/api/events', {
+            const response = await fetch('http://localhost:8080/api/events', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,11 +45,12 @@ const CreateEvent = () => {
                 },
                 body: JSON.stringify(event)
             });
-
+                
             if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText);
+                    const errorText = await response.text();
+                    throw new Error(errorText);
             }
+            
 
             alert('Событие успешно создано!');
             navigate('/events');
@@ -100,6 +115,33 @@ const CreateEvent = () => {
                         value={maxNumberOfUsers}
                         onChange={(e) => setMaxNumberOfUsers(e.target.value)}
                         required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="state">Страна:</label>
+                    <input
+                        type="text"
+                        id="state"
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="city">Город:</label>
+                    <input
+                        type="text"
+                        id="city"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="street">Улица:</label>
+                    <input
+                        type="text"
+                        id="street"
+                        value={street}
+                        onChange={(e) => setStreet(e.target.value)}
                     />
                 </div>
                 <button type="submit">Создать событие</button>

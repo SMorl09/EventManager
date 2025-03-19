@@ -57,15 +57,14 @@ namespace TestEventManager
         public async Task CreateEventAsync_ValidRequest_ReturnsEventResponse()
         {
             // Arrange
-            var eventRequest = new EventRequest { Title = "New Event", Description = "New Description", StartDate = "2024-01-01", Category = "Conference", MaxNumberOfUsers = 150 };
-            var eventModel = new Event { Id = 1, Title = eventRequest.Title, Description = eventRequest.Description, StartDate = eventRequest.StartDate, Category = EventCategory.Conference, MaxNumberOfUsers = eventRequest.MaxNumberOfUsers, ImageUrl = "image1.jpg" };
+            var eventRequest = new EventRequest { Title = "New Event", Description = "New Description", StartDate = "2024-01-01", Category = "Conference", MaxNumberOfUsers = 150,Address=new AddressRequest {State="Test",City="Test",Street="Test" } };
+            var eventModel = new Event { Id = 1, Title = eventRequest.Title, Description = eventRequest.Description, StartDate = eventRequest.StartDate, Category = EventCategory.Conference, MaxNumberOfUsers = eventRequest.MaxNumberOfUsers, Address = new Address { State = eventRequest.Address.State, City = eventRequest.Address.City, Street = eventRequest.Address.Street }, ImageUrl = "image1.jpg" };
             _mockEventRepository.Setup(repo => repo.AddAsync(It.IsAny<Event>())).Callback<Event>(e => e.Id = 1);
 
             // Act
             var result = await _eventService.CreateEventAsync(eventRequest, "image1.jpg");
 
             // Assert
-            Assert.NotNull(result);
             Assert.Equal(eventRequest.Title, result.Title);
             Assert.Equal("image1.jpg", result.ImageUrl);
         }

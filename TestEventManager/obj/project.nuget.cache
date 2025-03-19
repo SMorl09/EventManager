@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "0MybTHEYdZ1c+xjyu0jN3mAgj69aT+i2P3CULFeYHpy/3lj7DHo//TCNfmvapFngNI1a2CeokT9bk8jhqY5byQ==",
+  "dgSpecHash": "dgXSISdqzxD5RHkca8q36S9LERSPMEZma/IVXbUvhXf78JNxi8kBjdCGeVvI75LLkgBVYpRjNGy5k9oiym/aBQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\User09\\source\\repos\\EventManager\\TestEventManager\\TestEventManager.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\User09\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\User09\\.nuget\\packages\\coverlet.collector\\6.0.4\\coverlet.collector.6.0.4.nupkg.sha512",
+    "C:\\Users\\User09\\.nuget\\packages\\fluentvalidation\\11.5.1\\fluentvalidation.11.5.1.nupkg.sha512",
+    "C:\\Users\\User09\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.0\\fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",
+    "C:\\Users\\User09\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.5.1\\fluentvalidation.dependencyinjectionextensions.11.5.1.nupkg.sha512",
     "C:\\Users\\User09\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.1.1\\microsoft.aspnetcore.authentication.2.1.1.nupkg.sha512",
     "C:\\Users\\User09\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.1.1\\microsoft.aspnetcore.authentication.abstractions.2.1.1.nupkg.sha512",
     "C:\\Users\\User09\\.nuget\\packages\\microsoft.aspnetcore.authentication.cookies\\2.1.1\\microsoft.aspnetcore.authentication.cookies.2.1.1.nupkg.sha512",

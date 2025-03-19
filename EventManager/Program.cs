@@ -1,7 +1,9 @@
 
 using Application.Interface;
 using Application.Services;
+using Application.Validation;
 using Domain.Interfaces;
+using FluentValidation.AspNetCore;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,9 +27,11 @@ namespace EventManager
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddFluentValidation(options =>
+            {
+                options.RegisterValidatorsFromAssemblyContaining<UserRequestValidation>();
+            });
 
-           
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.Configure<FormOptions>(options =>
@@ -88,11 +92,10 @@ namespace EventManager
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
+            
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            
 
             app.UseHttpsRedirection();
 

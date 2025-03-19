@@ -21,5 +21,6 @@ namespace Application.DTO.Request
         public string Category { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "Max number of users must be greater than 0")]
         public int MaxNumberOfUsers { get; set; }
+        public AddressRequest? Address { get; set; }
     }
 }

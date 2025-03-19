@@ -1,26 +1,20 @@
-FROM node:16-alpine AS build
+# Use the latest LTS version of Node.js
+FROM node:18-alpine
+ 
+# Set the working directory inside the container
 WORKDIR /app
-
-# Установка зависимостей
-COPY package.json package-lock.json ./
+ 
+# Copy package.json and package-lock.json
+COPY package*.json ./
+ 
+# Install dependencies
 RUN npm install
-
-# Копирование исходного кода и сборка приложения
+ 
+# Copy the rest of your application files
 COPY . .
-RUN npm run build
-
-# Второй этап: создание образа для исполнения
-FROM node:16-alpine AS runtime
-WORKDIR /app
-
-# Установка сервера для раздачи статических файлов
-RUN npm install -g serve
-
-# Копирование сборки приложения
-COPY --from=build /app/build .
-
-# Открытие порта
+ 
+# Expose the port your app runs on
 EXPOSE 3000
-
-# Команда для запуска сервера
-CMD ["serve", "-s", ".", "-l", "3000"]
+ 
+# Define the command to run your app
+CMD ["npm", "start"]

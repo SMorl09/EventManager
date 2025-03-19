@@ -17,3 +17,4 @@ C:\Users\User09\source\repos\EventManager\Infrastructure\obj\Debug\net8.0\refint
 C:\Users\User09\source\repos\EventManager\Infrastructure\obj\Debug\net8.0\Infrastructure.pdb
 C:\Users\User09\source\repos\EventManager\Infrastructure\obj\Debug\net8.0\Infrastructure.genruntimeconfig.cache
 C:\Users\User09\source\repos\EventManager\Infrastructure\obj\Debug\net8.0\ref\Infrastructure.dll
+C:\Users\User09\source\repos\EventManager\Infrastructure\obj\Debug\net8.0\Infrastructure.sourcelink.json
