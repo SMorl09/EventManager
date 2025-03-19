@@ -12,8 +12,8 @@ namespace Application.Validation
     {
         public AddressRequestValidation()
         {
-            // Здесь можно добавить правила для проверки адреса
-            // Например, если AddressRequest имеет поля Street, City, ZipCode и т.д.
+            RuleFor(x => x.State)
+                .NotEmpty().WithMessage("State is required");
             RuleFor(x => x.Street)
                 .NotEmpty().WithMessage("Street is required");
 
