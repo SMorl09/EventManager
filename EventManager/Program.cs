@@ -27,34 +27,32 @@ namespace EventManager
                 builder = WebApplication.CreateBuilder(new WebApplicationOptions
                 {
                     ContentRootPath = Directory.GetCurrentDirectory(),
-                    WebRootPath = "wwwroot" // Это папка в проекте Presentation
+                    WebRootPath = "wwwroot"
                 });
             }
             
 
 
-            // Загружаем конфигурацию
+            
             builder.Configuration.AddEnvironmentVariables();
             var configuration = builder.Configuration;
 
-            // Получаем настройки JWT
+            
             var jwtSettings = configuration.GetSection("JwtSettings");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
-            // Регистрируем контроллеры:
-            // Вызов AddControllers с добавлением ApplicationPart, содержащей контроллеры из внешней сборки.
-            // Для примера ExternalProject.Controllers.ExternalController – класс, расположенный во внешнем проекте.
+            
             builder.Services.AddControllers(options =>
             {
-                options.Filters.Add<EventExceptionFilter>(); // Глобальный фильтр, если требуется
+                options.Filters.Add<EventExceptionFilter>(); 
             })
-            .AddApplicationPart(typeof(EventsController).Assembly) // подключаем внешнюю сборку
+            .AddApplicationPart(typeof(EventsController).Assembly) 
             .AddFluentValidation(options =>
             {
                 options.RegisterValidatorsFromAssemblyContaining<UserRequestValidation>();
             });
 
-            // Остальные настройки (Swagger, FormOptions, аутентификация, EF Core и т.д.)
+            
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -63,7 +61,7 @@ namespace EventManager
                 options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
             });
 
-            // Настраиваем аутентификацию с JWT
+            
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -89,7 +87,7 @@ namespace EventManager
                 };
             });
 
-            // Регистрируем EF Core в зависимости от среды
+            
             if (builder.Environment.IsEnvironment("Testing"))
             {
                 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -109,7 +107,7 @@ namespace EventManager
                                     .AllowAnyMethod());
             });
 
-            // Регистрация других сервисов
+            
             builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
@@ -118,7 +116,7 @@ namespace EventManager
 
             var app = builder.Build();
 
-            // Конфигурация middleware
+            
             app.UseSwagger();
             app.UseSwaggerUI();
             app.UseHttpsRedirection();

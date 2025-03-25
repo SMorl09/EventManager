@@ -28,14 +28,12 @@ namespace TestEventManager
 
         public UserControllerIntegrationTests(WebApplicationFactory<Program> factory)
         {
-            // Переопределяем настройки хоста для окружения тестирования
             _factory = factory.WithWebHostBuilder(builder =>
             {
                 builder.UseEnvironment("Testing");
 
                 builder.ConfigureServices(services =>
                 {
-                    // Удаляем существующую регистрацию DbContext, если она есть
                     var descriptor = services.SingleOrDefault(
                         d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
                     if (descriptor != null)
@@ -43,13 +41,11 @@ namespace TestEventManager
                         services.Remove(descriptor);
                     }
 
-                    // Регистрируем in-memory базу данных для тестирования
                     services.AddDbContext<ApplicationDbContext>(options =>
                     {
                         options.UseInMemoryDatabase("InMemoryDbForTesting");
                     });
 
-                    // Создаем scope для инициализации и засеивания базы тестовыми данными
                     var sp = services.BuildServiceProvider();
                     using var scope = sp.CreateScope();
                     var scopedServices = scope.ServiceProvider;
@@ -57,13 +53,10 @@ namespace TestEventManager
 
                     db.Database.EnsureCreated();
 
-                    // Если требуется, можно засадить тестовыми данными
-                    // Например, добавляем пользователя только если база пуста:
                     if (!db.Users.Any())
                     {
                         db.Users.Add(new User
                         {
-                            // Если поле Id автоинкрементируемое, не задавайте его явно
                             Name = "John",
                             PasswordHash = "hashedPassword",
                             Role = RoleCategory.User,
@@ -79,7 +72,6 @@ namespace TestEventManager
 
             _client = _factory.CreateClient();
 
-            // Генерируем JWT-токен; метод TestTokenHelper.GenerateJwtToken должен быть реализован вами.
             var jwtSettings = new
             {
                 Key = "VerySecretKeyThatIsAtLeast32Chars",
@@ -99,20 +91,20 @@ namespace TestEventManager
                 Name = "John",
                 Surename = "Doe",
                 Email = "john.doe@example.com",
-                Password = "password123", // на входе передается пароль, который затем хэшируется
+                Password = "password123",
                 Role = "User",
                 BirthDate = "2000-01-01"
             };
 
-            // Act: создаем пользователя через API
+            // Act
             var postResponse = await _client.PostAsJsonAsync("/api/users", newUser);
             postResponse.EnsureSuccessStatusCode();
             var createdUser = await postResponse.Content.ReadFromJsonAsync<UserResponse>();
 
-            // Act: запрашиваем созданного пользователя по id
+            // Act
             var getResponse = await _client.GetAsync($"/api/users/{createdUser.Id}");
 
-            // Assert: ожидаем статус OK и корректные данные пользователя
+            // Assert
             Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
             var userResponse = await getResponse.Content.ReadFromJsonAsync<UserResponse>();
             Assert.NotNull(userResponse);
@@ -122,7 +114,7 @@ namespace TestEventManager
         [Fact]
         public async Task GetUserById_NonExistingUser_ReturnsNotFound()
         {
-            // Act: Запрос несуществующего пользователя
+            // Act
             var response = await _client.GetAsync("/api/users/9999");
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -130,8 +122,7 @@ namespace TestEventManager
         [Fact]
         public async Task CreateUser_ValidRequest_ReturnsCreatedUser()
         {
-            // Arrange: Формируем данные для создания нового пользователя.
-            // Предполагается, что UserRequest на входе содержит простое поле "Password", которое позже хэшируется.
+            // Arrange
             var newUser = new UserRequest
             {
                 Name = "Jane",
@@ -144,10 +135,10 @@ namespace TestEventManager
 
             var content = new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json");
 
-            // Act: Отправляем POST-запрос для создания пользователя.
+            // Act
             var response = await _client.PostAsync("/api/users", content);
 
-            // Assert: Должен быть возвращен статус 201 Created с данными нового пользователя.
+            // Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             var createdUser = await response.Content.ReadFromJsonAsync<UserResponse>();
             Assert.NotNull(createdUser);
@@ -157,22 +148,21 @@ namespace TestEventManager
         [Fact]
         public async Task UpdateUser_ExistingUser_ReturnsNoContent()
         {
-            // Arrange: Обновляем данные пользователя с Id = 1.
+            // Arrange
             var updatedUser = new UserRequest
             {
                 Name = "John Updated",
-                Password = "newpassword", // новое значение, которое будет хэшировано
+                Password = "newpassword",
                 Surename = "Doe Updated",
-                BirthDate = "2000-01-01", // можно оставить без изменений
+                BirthDate = "2000-01-01",
                 Email = "john.updated@example.com",
                 Role = "Admin"
             };
 
-            // Act: Отправляем PUT-запрос на обновление.
+            // Act
             var response = await _client.PutAsJsonAsync("/api/users/1", updatedUser);
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
-            // Дополнительно: Проверяем, что изменения вступили в силу, запросив обновленные данные.
             var getResponse = await _client.GetAsync("/api/users/1");
             getResponse.EnsureSuccessStatusCode();
             var userResponse = await getResponse.Content.ReadFromJsonAsync<UserResponse>();
@@ -182,7 +172,7 @@ namespace TestEventManager
         [Fact]
         public async Task UpdateUser_NonExistingUser_ReturnsNotFound()
         {
-            // Arrange: Формируем запрос на обновление для несуществующего пользователя.
+            // Arrange
             var updatedUser = new UserRequest
             {
                 Name = "Doesnt Matter",
@@ -193,7 +183,7 @@ namespace TestEventManager
                 Role = "User"
             };
 
-            // Act: Отправляем PUT-запрос.
+            // Act
             var response = await _client.PutAsJsonAsync("/api/users/9999", updatedUser);
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -201,11 +191,10 @@ namespace TestEventManager
         [Fact]
         public async Task DeleteUser_ExistingUser_ReturnsNoContent()
         {
-            // Act: Удаляем пользователя с Id = 1.
+            // Act
             var response = await _client.DeleteAsync("/api/users/1");
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
-            // Дополнительно: Проверяем, что пользователь удален.
             var getResponse = await _client.GetAsync("/api/users/1");
             Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
         }
@@ -213,7 +202,7 @@ namespace TestEventManager
         [Fact]
         public async Task DeleteUser_NonExistingUser_ReturnsNotFound()
         {
-            // Act: Пытаемся удалить несуществующего пользователя.
+            // Act
             var response = await _client.DeleteAsync("/api/users/9999");
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "vY4I6rCR/2S/CtcHc/Cints6/f5x5tGDByyMIth61Yw=",
+  "Hash": "GheVfT9iF2LWULqBtdUdXUGZso+q/suIR3iaNr7c5FI=",
   "Source": "EventManager",
   "BasePath": "_content/EventManager",
   "Mode": "Default",
@@ -15,5 +15,25 @@
       "Pattern": "**"
     }
   ],
-  "Assets": []
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\User09\\source\\repos\\EventManager\\EventManager\\wwwroot\\images\\.gitkeep",
+      "SourceId": "EventManager",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User09\\source\\repos\\EventManager\\EventManager\\wwwroot\\",
+      "BasePath": "_content/EventManager",
+      "RelativePath": "images/.gitkeep",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\.gitkeep"
+    }
+  ]
 }

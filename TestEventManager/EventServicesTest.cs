@@ -19,15 +19,13 @@ namespace TestEventManager
 
         public EventServicesTest()
         {
-            // Создаем мок для репозитория событий
+            
             _mockEventRepository = new Mock<IEventRepository>();
 
-            // Создаем мок для IWebHostEnvironment
+            
             _mockEnv = new Mock<IWebHostEnvironment>();
-            // Настраиваем необходимые свойства. Например, WebRootPath:
             _mockEnv.Setup(env => env.WebRootPath).Returns(@"C:\\TestWebRoot");
 
-            // Передаем оба мок-объекта в конструктор EventService
             _eventService = new EventService(_mockEventRepository.Object, _mockEnv.Object);
         }
 
@@ -84,7 +82,7 @@ namespace TestEventManager
                 Address = new AddressRequest { State = "Test", City = "Test", Street = "Test" }
             };
 
-            // Настраиваем поведение репозитория для добавления события.
+            
             _mockEventRepository.Setup(repo => repo.AddAsync(It.IsAny<Event>(), It.IsAny<CancellationToken>()))
            .Callback<Event, CancellationToken>((e, ct) => e.Id = 1)
            .Returns(Task.CompletedTask);
