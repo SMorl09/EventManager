@@ -1,44 +1,26 @@
-﻿using Application.DTO.Request;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Domain.Models;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Application.Interface;
-using Domain.Models;
 
-namespace EventManager.Controllers
+namespace Application.Services
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController : ControllerBase
+    public class JwtTokenService : IJwtTokenService
     {
         private readonly IConfiguration _configuration;
-        private readonly IUserService _userService;
 
-        public AuthController(IConfiguration configuration, IUserService userService)
+        public JwtTokenService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _userService = userService;
         }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var user = await _userService.AuthenticateAsync(loginRequest.Name, loginRequest.Password);
-            if (user == null)
-                return Unauthorized("Wrong name or password.");
-
-            var token = GenerateJwtToken(user);
-
-            return Ok(new { Token = token });
-        }
-
-        private string GenerateJwtToken(User user)
+        public string GenerateJwtToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
 

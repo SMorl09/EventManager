@@ -50,7 +50,7 @@ namespace TestEventManager
 
                     db.Database.EnsureCreated();
                     db.Events.AddRange(
-                        new Event {  Title = "Event 1", Description = "Description 1", StartDate = "2023-09-01", Category = EventCategory.Conference, MaxNumberOfUsers = 100, ImageUrl = "image1.jpg" },
+                        new Event { Title = "Event 1", Description = "Description 1", StartDate = "2023-09-01", Category = EventCategory.Conference, MaxNumberOfUsers = 100, ImageUrl = "image1.jpg" },
                         new Event { Title = "Event 2", Description = "Description 2", StartDate = "2023-09-02", Category = EventCategory.Party, MaxNumberOfUsers = 50, ImageUrl = "image2.jpg" }
                     );
                     db.SaveChanges();
@@ -62,7 +62,7 @@ namespace TestEventManager
             var jwtSettings = new
             {
                 Key = "VerySecretKeyThatIsAtLeast32Chars",
-                Issuer = "YourApp", 
+                Issuer = "YourApp",
                 Audience = "YourAppUsers"
             };
             _token = TestTokenHelper.GenerateJwtToken(jwtSettings.Key, jwtSettings.Issuer, jwtSettings.Audience, "1", "Admin");
@@ -104,11 +104,11 @@ namespace TestEventManager
                 StartDate = "2023-09-03",
                 Category = "Conference",
                 MaxNumberOfUsers = 150,
-                Address=new AddressRequest
+                Address = new AddressRequest
                 {
-                    State="Test",
-                    City="Test",
-                    Street="Test"
+                    State = "Test",
+                    City = "Test",
+                    Street = "Test"
                 }
             };
             var content = new StringContent(JsonConvert.SerializeObject(newEvent), Encoding.UTF8, "application/json");

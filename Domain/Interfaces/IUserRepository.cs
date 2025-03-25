@@ -9,11 +9,11 @@ namespace Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> GetUserById(int id);
-        Task AddAsync(User user);
-        Task UpdateAsync(User user);
-        Task DeleteAsync(int id);
-        Task<User> GetUserByName(string name);
-        Task<bool> UserExistsByNameAsync(string name);
+        Task<User> GetUserById(int id, CancellationToken cancellationToken);
+        Task AddAsync(User user, CancellationToken cancellationToken);
+        Task UpdateAsync(User user, CancellationToken cancellationToken);
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
+        Task<User> GetUserByName(string name, CancellationToken cancellationToken);
+        Task<bool> UserExistsByNameAsync(string name, CancellationToken cancellationToken);
     }
 }

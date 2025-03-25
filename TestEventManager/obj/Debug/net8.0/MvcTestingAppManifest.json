@@ -2,5 +2,6 @@
   "Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\User09\\source\\repos\\EventManager\\Application",
   "Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\User09\\source\\repos\\EventManager\\Domain",
   "EventManager, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\User09\\source\\repos\\EventManager\\EventManager",
-  "Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\User09\\source\\repos\\EventManager\\Infrastructure"
+  "Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\User09\\source\\repos\\EventManager\\Infrastructure",
+  "Presentation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\User09\\source\\repos\\EventManager\\Presentation"
 }

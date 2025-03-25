@@ -24,9 +24,9 @@ namespace Application.Services
             _passwordHasher = new PasswordHasher<User>();
         }
 
-        public async Task<UserResponse> GetUserByIdAsync(int id)
+        public async Task<UserResponse> GetUserByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserById(id);
+            var user = await _userRepository.GetUserById(id, cancellationToken);
             if (user == null)
                 throw new Exception("User not found.");
 
@@ -42,10 +42,10 @@ namespace Application.Services
 
             return userResponse;
         }
-        public async Task<UserResponse> CreateUserAsync(UserRequest userRequest)
+        public async Task<UserResponse> CreateUserAsync(UserRequest userRequest, CancellationToken cancellationToken)
         {
 
-            if (await _userRepository.UserExistsByNameAsync(userRequest.Name))
+            if (await _userRepository.UserExistsByNameAsync(userRequest.Name, cancellationToken ))
             {
                 throw new Exception("User with this name already exist.");
             }
@@ -60,7 +60,7 @@ namespace Application.Services
             };
             user.PasswordHash = _passwordHasher.HashPassword(user, userRequest.Password);
 
-            await _userRepository.AddAsync(user);
+            await _userRepository.AddAsync(user, cancellationToken);
 
             var userResponse = new UserResponse
             {
@@ -74,9 +74,9 @@ namespace Application.Services
 
             return userResponse;
         }
-        public async Task UpdateUserAsync(int id, UserRequest userRequest)
+        public async Task UpdateUserAsync(int id, UserRequest userRequest, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserById(id);
+            var user = await _userRepository.GetUserById(id, cancellationToken);
             if (user == null)
                 throw new Exception("User not found.");
 
@@ -86,15 +86,15 @@ namespace Application.Services
             user.Email = userRequest.Email;
             user.Role = Enum.Parse<RoleCategory>(userRequest.Role);
 
-            await _userRepository.UpdateAsync(user);
+            await _userRepository.UpdateAsync(user, cancellationToken);
         }
-        public async Task DeleteUserAsync(int id)
+        public async Task DeleteUserAsync(int id, CancellationToken cancellationToken)
         {
-            await _userRepository.DeleteAsync(id);
+            await _userRepository.DeleteAsync(id, cancellationToken);
         }
-        public async Task<User> AuthenticateAsync(string username, string password)
+        public async Task<User> AuthenticateAsync(string username, string password, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserByName(username);
+            var user = await _userRepository.GetUserByName(username, cancellationToken);
             if (user == null)
                 return null;
 

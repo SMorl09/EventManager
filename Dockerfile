@@ -10,6 +10,7 @@ COPY ["EventManager/EventManager.csproj","EventManager/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Application/Application.csproj","Application/"] 
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
+COPY ["Presentation/Presentation.csproj", "Presentation/"]
 RUN dotnet restore "EventManager/EventManager.csproj"
 COPY . .
 WORKDIR "/src/EventManager"

@@ -228,7 +228,6 @@ C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\refs
 C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\refs\Microsoft.Extensions.Localization.Abstractions.dll
 C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\refs\Microsoft.Extensions.Localization.dll
 C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\refs\Microsoft.Extensions.Logging.TraceSource.dll
-C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\refs\Microsoft.Extensions.ObjectPool.dll
 C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\refs\Microsoft.Extensions.Options.ConfigurationExtensions.dll
 C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\refs\Microsoft.Extensions.Options.DataAnnotations.dll
 C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\refs\Microsoft.Extensions.WebEncoders.dll
@@ -441,3 +440,9 @@ C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\Even
 C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\Infrastructure.pdb
 C:\Users\User09\source\repos\EventManager\TestEventManager\obj\Debug\net8.0\MvcTestingAppManifest.json
 C:\Users\User09\source\repos\EventManager\TestEventManager\obj\Debug\net8.0\TestEventManager.sourcelink.json
+C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\FluentValidation.dll
+C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
+C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\Presentation.dll
+C:\Users\User09\source\repos\EventManager\TestEventManager\bin\Debug\net8.0\Presentation.pdb

@@ -153,3 +153,8 @@ C:\Users\User09\source\repos\EventManager\EventManager\obj\Debug\net8.0\EventMan
 C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\FluentValidation.dll
 C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
 C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
+C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\Presentation.dll
+C:\Users\User09\source\repos\EventManager\EventManager\bin\Debug\net8.0\Presentation.pdb

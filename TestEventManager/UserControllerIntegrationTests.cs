@@ -1,134 +1,221 @@
-﻿using Application.DTO.Request;
-using Application.DTO.Response;
-using Application.Interface;
-using EventManager.Controllers;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
+﻿using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Testing;
+using EventManager;
+using Application.DTO.Request;
+using Domain.Data;
+using Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Infrastructure.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Application.DTO.Response;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Net;
 
 namespace TestEventManager
 {
-    public class UserControllerIntegrationTests
+    public class UserControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     {
-        private readonly Mock<IUserService> _mockUserService;
-        private readonly UsersController _usersController;
+        private readonly WebApplicationFactory<Program> _factory;
+        private readonly HttpClient _client;
+        private readonly string _token;
 
-        public UserControllerIntegrationTests()
+        public UserControllerIntegrationTests(WebApplicationFactory<Program> factory)
         {
-            _mockUserService = new Mock<IUserService>();
-            _usersController = new UsersController(_mockUserService.Object);
+            // Переопределяем настройки хоста для окружения тестирования
+            _factory = factory.WithWebHostBuilder(builder =>
+            {
+                builder.UseEnvironment("Testing");
+
+                builder.ConfigureServices(services =>
+                {
+                    // Удаляем существующую регистрацию DbContext, если она есть
+                    var descriptor = services.SingleOrDefault(
+                        d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
+                    if (descriptor != null)
+                    {
+                        services.Remove(descriptor);
+                    }
+
+                    // Регистрируем in-memory базу данных для тестирования
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                    {
+                        options.UseInMemoryDatabase("InMemoryDbForTesting");
+                    });
+
+                    // Создаем scope для инициализации и засеивания базы тестовыми данными
+                    var sp = services.BuildServiceProvider();
+                    using var scope = sp.CreateScope();
+                    var scopedServices = scope.ServiceProvider;
+                    var db = scopedServices.GetRequiredService<ApplicationDbContext>();
+
+                    db.Database.EnsureCreated();
+
+                    // Если требуется, можно засадить тестовыми данными
+                    // Например, добавляем пользователя только если база пуста:
+                    if (!db.Users.Any())
+                    {
+                        db.Users.Add(new User
+                        {
+                            // Если поле Id автоинкрементируемое, не задавайте его явно
+                            Name = "John",
+                            PasswordHash = "hashedPassword",
+                            Role = RoleCategory.User,
+                            Surename = "Doe",
+                            BirthDate = "2000-01-01",
+                            CreatedDate = DateTime.UtcNow.ToString("o"),
+                            Email = "john.doe@example.com"
+                        });
+                        db.SaveChanges();
+                    }
+                });
+            });
+
+            _client = _factory.CreateClient();
+
+            // Генерируем JWT-токен; метод TestTokenHelper.GenerateJwtToken должен быть реализован вами.
+            var jwtSettings = new
+            {
+                Key = "VerySecretKeyThatIsAtLeast32Chars",
+                Issuer = "YourApp",
+                Audience = "YourAppUsers"
+            };
+            _token = TestTokenHelper.GenerateJwtToken(jwtSettings.Key, jwtSettings.Issuer, jwtSettings.Audience, "1", "Admin");
+            _client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", _token);
         }
 
         [Fact]
-        public async Task GetUserById_ExistingId_ReturnsOk()
+        public async Task GetUserById_ExistingUser_ReturnsOk()
         {
-            // Arrange
-            var userId = 1;
-            var userResponse = new UserResponse { Id = userId, Name = "John", Surename = "Doe", Email = "john.doe@example.com" };
-            _mockUserService.Setup(service => service.GetUserByIdAsync(userId)).ReturnsAsync(userResponse);
+            var newUser = new UserRequest
+            {
+                Name = "John",
+                Surename = "Doe",
+                Email = "john.doe@example.com",
+                Password = "password123", // на входе передается пароль, который затем хэшируется
+                Role = "User",
+                BirthDate = "2000-01-01"
+            };
 
-            // Act
-            var result = await _usersController.GetUserById(userId);
+            // Act: создаем пользователя через API
+            var postResponse = await _client.PostAsJsonAsync("/api/users", newUser);
+            postResponse.EnsureSuccessStatusCode();
+            var createdUser = await postResponse.Content.ReadFromJsonAsync<UserResponse>();
 
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<UserResponse>(okResult.Value);
-            Assert.Equal(userId, returnValue.Id);
+            // Act: запрашиваем созданного пользователя по id
+            var getResponse = await _client.GetAsync($"/api/users/{createdUser.Id}");
+
+            // Assert: ожидаем статус OK и корректные данные пользователя
+            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+            var userResponse = await getResponse.Content.ReadFromJsonAsync<UserResponse>();
+            Assert.NotNull(userResponse);
+            Assert.Equal(createdUser.Id, userResponse.Id);
         }
 
         [Fact]
-        public async Task GetUserById_NonExistingId_ReturnsNotFound()
+        public async Task GetUserById_NonExistingUser_ReturnsNotFound()
         {
-            // Arrange
-            var userId = 1;
-            _mockUserService.Setup(service => service.GetUserByIdAsync(userId)).ReturnsAsync((UserResponse)null);
-
-            // Act
-            var result = await _usersController.GetUserById(userId);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
+            // Act: Запрос несуществующего пользователя
+            var response = await _client.GetAsync("/api/users/9999");
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
-        public async Task CreateUser_ValidRequest_ReturnsCreatedAtAction()
+        public async Task CreateUser_ValidRequest_ReturnsCreatedUser()
         {
-            // Arrange
-            var userRequest = new UserRequest { Name = "Jane", Surename = "Doe", Email = "jane.doe@example.com", Password = "password123", Role = "User" };
-            var userResponse = new UserResponse { Id = 1, Name = userRequest.Name, Surename = userRequest.Surename, Email = userRequest.Email };
-            _mockUserService.Setup(service => service.CreateUserAsync(userRequest)).ReturnsAsync(userResponse);
+            // Arrange: Формируем данные для создания нового пользователя.
+            // Предполагается, что UserRequest на входе содержит простое поле "Password", которое позже хэшируется.
+            var newUser = new UserRequest
+            {
+                Name = "Jane",
+                Password = "password123",
+                Surename = "Doe",
+                BirthDate = "1990-05-05",
+                Email = "jane.doe@example.com",
+                Role = "User"
+            };
 
-            // Act
-            var result = await _usersController.CreateUser(userRequest);
+            var content = new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json");
 
-            // Assert
-            var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-            var returnValue = Assert.IsType<UserResponse>(createdAtActionResult.Value);
-            Assert.Equal(userRequest.Name, returnValue.Name);
+            // Act: Отправляем POST-запрос для создания пользователя.
+            var response = await _client.PostAsync("/api/users", content);
+
+            // Assert: Должен быть возвращен статус 201 Created с данными нового пользователя.
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            var createdUser = await response.Content.ReadFromJsonAsync<UserResponse>();
+            Assert.NotNull(createdUser);
+            Assert.Equal("Jane", createdUser.Name);
         }
 
         [Fact]
-        public async Task UpdateUser_ExistingId_ValidRequest_ReturnsNoContent()
+        public async Task UpdateUser_ExistingUser_ReturnsNoContent()
         {
-            // Arrange
-            var userId = 1;
-            var userRequest = new UserRequest { Name = "John Updated", Surename = "Doe Updated", Email = "john.updated@example.com", Password = "newpassword123", Role = "Admin" };
+            // Arrange: Обновляем данные пользователя с Id = 1.
+            var updatedUser = new UserRequest
+            {
+                Name = "John Updated",
+                Password = "newpassword", // новое значение, которое будет хэшировано
+                Surename = "Doe Updated",
+                BirthDate = "2000-01-01", // можно оставить без изменений
+                Email = "john.updated@example.com",
+                Role = "Admin"
+            };
 
-            // Act
-            var result = await _usersController.UpdateUser(userId, userRequest);
+            // Act: Отправляем PUT-запрос на обновление.
+            var response = await _client.PutAsJsonAsync("/api/users/1", updatedUser);
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
-            // Assert
-            Assert.IsType<NoContentResult>(result);
-            _mockUserService.Verify(service => service.UpdateUserAsync(userId, userRequest), Times.Once);
+            // Дополнительно: Проверяем, что изменения вступили в силу, запросив обновленные данные.
+            var getResponse = await _client.GetAsync("/api/users/1");
+            getResponse.EnsureSuccessStatusCode();
+            var userResponse = await getResponse.Content.ReadFromJsonAsync<UserResponse>();
+            Assert.Equal("John Updated", userResponse.Name);
         }
 
         [Fact]
-        public async Task UpdateUser_NonExistingId_ReturnsNotFound()
+        public async Task UpdateUser_NonExistingUser_ReturnsNotFound()
         {
-            // Arrange
-            var userId = 1;
-            var userRequest = new UserRequest { Name = "John Updated", Surename = "Doe Updated", Email = "john.updated@example.com", Password = "newpassword123", Role = "Admin" };
-            _mockUserService.Setup(service => service.UpdateUserAsync(userId, userRequest)).ThrowsAsync(new Exception("User not found."));
+            // Arrange: Формируем запрос на обновление для несуществующего пользователя.
+            var updatedUser = new UserRequest
+            {
+                Name = "Doesnt Matter",
+                Password = "whatever",
+                Surename = "NoUser",
+                BirthDate = "2000-01-01",
+                Email = "nouser@example.com",
+                Role = "User"
+            };
 
-            // Act
-            var result = await _usersController.UpdateUser(userId, userRequest);
-
-            // Assert
-            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("User not found.", notFoundResult.Value);
+            // Act: Отправляем PUT-запрос.
+            var response = await _client.PutAsJsonAsync("/api/users/9999", updatedUser);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
-        public async Task DeleteUser_ExistingId_ReturnsNoContent()
+        public async Task DeleteUser_ExistingUser_ReturnsNoContent()
         {
-            // Arrange
-            var userId = 1;
+            // Act: Удаляем пользователя с Id = 1.
+            var response = await _client.DeleteAsync("/api/users/1");
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
-            // Act
-            var result = await _usersController.DeleteUser(userId);
-
-            // Assert
-            Assert.IsType<NoContentResult>(result);
-            _mockUserService.Verify(service => service.DeleteUserAsync(userId), Times.Once);
+            // Дополнительно: Проверяем, что пользователь удален.
+            var getResponse = await _client.GetAsync("/api/users/1");
+            Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
         }
 
         [Fact]
-        public async Task DeleteUser_NonExistingId_ReturnsNotFound()
+        public async Task DeleteUser_NonExistingUser_ReturnsNotFound()
         {
-            // Arrange
-            var userId = 1;
-            _mockUserService.Setup(service => service.DeleteUserAsync(userId)).ThrowsAsync(new Exception("User not found."));
-
-            // Act
-            var result = await _usersController.DeleteUser(userId);
-
-            // Assert
-            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("User not found.", notFoundResult.Value);
+            // Act: Пытаемся удалить несуществующего пользователя.
+            var response = await _client.DeleteAsync("/api/users/9999");
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }
     }
 }

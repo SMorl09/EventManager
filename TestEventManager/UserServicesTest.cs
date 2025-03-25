@@ -31,10 +31,14 @@ namespace TestEventManager
             // Arrange
             var userId = 1;
             var user = new User { Id = userId, Name = "John", Surename = "Doe", BirthDate = "1990-01-01", CreatedDate = "2023-09-01", Email = "john.doe@example.com" };
-            _mockUserRepository.Setup(repo => repo.GetUserById(userId)).ReturnsAsync(user);
+            _mockUserRepository
+           .Setup(repo => repo.GetUserById(userId, It.IsAny<CancellationToken>()))
+           .ReturnsAsync(user);
+
+            var cancellationToken = CancellationToken.None;
 
             // Act
-            var result = await _userService.GetUserByIdAsync(userId);
+            var result = await _userService.GetUserByIdAsync(userId, cancellationToken);
 
             // Assert
             Assert.NotNull(result);
@@ -48,11 +52,15 @@ namespace TestEventManager
             var userRequest = new UserRequest { Name = "Jane", Surename = "Doe", BirthDate = "1990-01-01", Email = "jane.doe@example.com", Password = "password123", Role = "User" };
             var user = new User { Id = 1, Name = userRequest.Name, Surename = userRequest.Surename, BirthDate = userRequest.BirthDate, CreatedDate = DateTime.UtcNow.ToString("yyyy-MM-dd"), Email = userRequest.Email };
 
-            _mockUserRepository.Setup(repo => repo.AddAsync(It.IsAny<User>())).Callback<User>(u => u.Id = 1);
+            _mockUserRepository
+           .Setup(repo => repo.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
+           .Callback<User, CancellationToken>((u, ct) => u.Id = 1)
+           .Returns(Task.CompletedTask);
+
+            var cancellationToken = CancellationToken.None;
 
             // Act
-            var result = await _userService.CreateUserAsync(userRequest);
-
+            var result = await _userService.CreateUserAsync(userRequest, cancellationToken);
             // Assert
             Assert.NotNull(result);
             Assert.Equal(userRequest.Name, result.Name);
@@ -65,13 +73,25 @@ namespace TestEventManager
             var userId = 1;
             var user = new User { Id = userId, Name = "John", Surename = "Doe", BirthDate = "1990-01-01", CreatedDate = "2023-09-01", Email = "john.doe@example.com", Role = RoleCategory.User };
             var userRequest = new UserRequest { Name = "John Updated", Surename = "Doe Updated", BirthDate = "1990-01-02", Email = "john.updated@example.com", Role = "Admin" };
-            _mockUserRepository.Setup(repo => repo.GetUserById(userId)).ReturnsAsync(user);
+            _mockUserRepository
+            .Setup(repo => repo.GetUserById(userId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+            var cancellationToken = CancellationToken.None;
 
             // Act
-            await _userService.UpdateUserAsync(userId, userRequest);
+            await _userService.UpdateUserAsync(userId, userRequest, cancellationToken);
 
             // Assert
-            _mockUserRepository.Verify(repo => repo.UpdateAsync(It.Is<User>(u => u.Name == userRequest.Name && u.Surename == userRequest.Surename && u.BirthDate == userRequest.BirthDate && u.Email == userRequest.Email && u.Role == RoleCategory.Admin)), Times.Once);
+            _mockUserRepository.Verify(repo => repo.UpdateAsync(
+                It.Is<User>(u =>
+                    u.Name == userRequest.Name &&
+                    u.Surename == userRequest.Surename &&
+                    u.BirthDate == userRequest.BirthDate &&
+                    u.Email == userRequest.Email &&
+                    u.Role == RoleCategory.Admin),
+                It.IsAny<CancellationToken>()),
+                Times.Once);
         }
 
         [Fact]
@@ -80,11 +100,13 @@ namespace TestEventManager
             // Arrange
             var userId = 1;
 
+            var cancellationToken = CancellationToken.None;
+
             // Act
-            await _userService.DeleteUserAsync(userId);
+            await _userService.DeleteUserAsync(userId, cancellationToken);
 
             // Assert
-            _mockUserRepository.Verify(repo => repo.DeleteAsync(userId), Times.Once);
+            _mockUserRepository.Verify(repo => repo.DeleteAsync(userId, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -94,10 +116,14 @@ namespace TestEventManager
             var username = "john.doe";
             var password = "password123";
             var user = new User { Id = 1, Name = "John", Surename = "Doe", BirthDate = "1990-01-01", CreatedDate = "2023-09-01", Email = "john.doe@example.com", PasswordHash = new PasswordHasher<User>().HashPassword(null, password) };
-            _mockUserRepository.Setup(repo => repo.GetUserByName(username)).ReturnsAsync(user);
+            _mockUserRepository
+           .Setup(repo => repo.GetUserByName(username, It.IsAny<CancellationToken>()))
+           .ReturnsAsync(user);
+
+            var cancellationToken = CancellationToken.None;
 
             // Act
-            var result = await _userService.AuthenticateAsync(username, password);
+            var result = await _userService.AuthenticateAsync(username, password, cancellationToken);
 
             // Assert
             Assert.NotNull(result);
